@@ -1,0 +1,82 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.gch
+*.pch
+
+# Executables
+*.exe
+*.out
+*.app
+*.dll
+
+# Debug files
+*.pdb
+*.idb
+*.ilk
+*.map
+*.exp
+
+# Mac OS X specific
+*.dSYM
+*.DS_Store
+
+# Visual Studio specific
+.vs/
+*.user
+*.suo
+*.sln.docstates
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# Ewww
+.vscode/
+*.code-workspace
+
+# CMake specific
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CMakeScripts/
+*.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+Testing/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+\#*#
+.\#*
+
+# User-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build directories
+build/
+bin/
+lib/
+obj/
+out/
+Debug/
+Release/
+x64/
+x86/
+Win32/
