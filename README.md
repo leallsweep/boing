@@ -107,6 +107,7 @@ cube:setWireframe(true/false)   -- toggle wireframe rendering
 cube:getName()                  -- → string
 cube:getType()                  -- → "Cube" | "Plane" | "Triangle"
 cube:getPosition()              -- → x, y, z (three return values)
+cube:setTexture("path")         -- set texture
 ```
 
 ### Camera
