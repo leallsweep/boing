@@ -7,6 +7,7 @@
 
 #include "boink_math.h"
 #include "boink_camera.h"
+#include "boink_texture.h"
 #include "boink_shapes.h"
 #include "boink_scene.h"
 #include "boink_renderer.h"

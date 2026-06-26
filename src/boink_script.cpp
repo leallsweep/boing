@@ -1,4 +1,5 @@
 #include "../include/boink_script.h"
+#include "../include/boink_texture.h"
 #include <lua.hpp>
 #include <cstdio>
 #include <cstring>
@@ -21,6 +22,7 @@ static Scene* getScene(lua_State* L){
 
 // ─── Shape userdata helpers ──────────────────────────────────────────────────
 static const char* SHAPE_MT = "Boink.Shape";
+static const char* TEX_MT   = "Boink.Texture";
 
 static Shape** pushShape(lua_State* L, Shape* s){
     Shape** ud = (Shape**)lua_newuserdata(L, sizeof(Shape*));
@@ -94,18 +96,41 @@ static int shape_getPosition(lua_State* L){
     lua_pushnumber(L,p.x); lua_pushnumber(L,p.y); lua_pushnumber(L,p.z);
     return 3;
 }
+static int shape_setTexture(lua_State* L){
+    Shape* s = checkShape(L,1);
+    if(lua_isnil(L,2)){
+        s->setTexture(nullptr);
+    } else if(lua_isstring(L,2)){
+        // Convenience: pass a path string directly
+        const char* path = lua_tostring(L,2);
+        Texture* t = TextureCache::load(path);
+        if(!t) fprintf(stderr,"[Boink] Lua: could not load texture '%s'\n", path);
+        s->setTexture(t);
+    } else {
+        // Texture userdata returned by Boink.loadTexture()
+        Texture** ud = (Texture**)luaL_checkudata(L, 2, TEX_MT);
+        s->setTexture(ud ? *ud : nullptr);
+    }
+    lua_pushvalue(L,1); return 1;
+}
+static int shape_setTextureTile(lua_State* L){
+    checkShape(L,1)->setTextureTile((float)luaL_checknumber(L,2));
+    lua_pushvalue(L,1); return 1;
+}
 
 static const luaL_Reg shape_methods[] = {
-    {"moveTo",      shape_moveTo},
-    {"move",        shape_move},
-    {"rotateTo",    shape_rotateTo},
-    {"rotate",      shape_rotate},
-    {"scaleTo",     shape_scaleTo},
-    {"setColor",    shape_setColor},
-    {"setWireframe",shape_setWireframe},
-    {"getName",     shape_getName},
-    {"getType",     shape_getType},
-    {"getPosition", shape_getPosition},
+    {"moveTo",         shape_moveTo},
+    {"move",           shape_move},
+    {"rotateTo",       shape_rotateTo},
+    {"rotate",         shape_rotate},
+    {"scaleTo",        shape_scaleTo},
+    {"setColor",       shape_setColor},
+    {"setWireframe",   shape_setWireframe},
+    {"getName",        shape_getName},
+    {"getType",        shape_getType},
+    {"getPosition",    shape_getPosition},
+    {"setTexture",     shape_setTexture},
+    {"setTextureTile", shape_setTextureTile},
     {nullptr, nullptr}
 };
 
@@ -184,6 +209,22 @@ static int lua_print(lua_State* L){
     return 0;
 }
 
+// ── Texture ───────────────────────────────────────────────────────────────────
+// Boink.loadTexture("path/to/image.png")
+// Returns a texture handle (lightuserdata) or nil on failure.
+// Pass the handle directly to shape:setTexture().
+
+static int lua_loadTexture(lua_State* L){
+    const char* path = luaL_checkstring(L,1);
+    Texture* t = TextureCache::load(path);
+    if(!t){ lua_pushnil(L); return 1; }
+    Texture** ud = (Texture**)lua_newuserdata(L, sizeof(Texture*));
+    *ud = t;
+    luaL_getmetatable(L, TEX_MT);
+    lua_setmetatable(L, -2);
+    return 1;
+}
+
 // ─── ScriptEngine ────────────────────────────────────────────────────────────
 ScriptEngine::ScriptEngine() {
     L = luaL_newstate();
@@ -208,6 +249,10 @@ void ScriptEngine::registerAPI() {
     luaL_setfuncs(L, shape_methods, 0);
     lua_pop(L,1);
 
+    // Create Texture metatable (no methods needed — it's just a handle)
+    luaL_newmetatable(L, TEX_MT);
+    lua_pop(L,1);
+
     // Register global functions in "Boink" table
     lua_newtable(L);
 
@@ -225,6 +270,7 @@ void ScriptEngine::registerAPI() {
     reg("cameraLookAt",      lua_cameraLookAt);
     reg("cameraSetFov",      lua_cameraSetFov);
     reg("cameraGetPosition", lua_cameraGetPosition);
+    reg("loadTexture",       lua_loadTexture);
 
     lua_setglobal(L, "Boink");
 

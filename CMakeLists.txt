@@ -25,6 +25,7 @@ add_library(boinklib STATIC
     src/boink_renderer.cpp
     src/boink_script.cpp
     src/boink_window.cpp
+    src/boink_texture.cpp
 )
 
 target_include_directories(boinklib PUBLIC

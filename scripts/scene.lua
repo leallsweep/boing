@@ -16,12 +16,15 @@ function onLoad()
     local ground = Boink.addPlane("ground", 10)
     ground:moveTo(0, -1, 0)
     ground:scaleTo(10, 1, 10)
-    ground:setColor(0.3, 0.55, 0.3)
+    ground:setColor(1.0, 1.0, 1.0)          -- white tint so texture shows true color
+    ground:setTexture("textures/grass.png")  -- place a PNG here, or comment this out
+    ground:setTextureTile(5)                 -- repeat texture 5x across the plane
 
     -- Central spinning cube
     local cube = Boink.addCube("mainCube")
     cube:moveTo(0, 0, 0)
-    cube:setColor(0.2, 0.6, 1.0)
+    cube:setColor(1.0, 1.0, 1.0)
+    cube:setTexture("scripts/textures/template.jpg")  -- place a PNG here, or comment this out
 
     -- Red wireframe cube next to it
     local wire = Boink.addCube("wireCube")
