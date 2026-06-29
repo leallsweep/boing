@@ -32,6 +32,15 @@ CMake 3.16+
 sudo apt install libglew-dev libglfw3-dev liblua5.4-dev cmake build-essential
 ```
 
+### Arch
+```bash
+sudo pacman -S glew glfw-x11 lua cmake base-devel
+```
+or with Wayland
+```bash
+sudo pacman -S glew glfw-wayland lua cmake base-devel
+```
+
 ### macOS (Homebrew)
 ```bash
 brew install glew glfw lua cmake
